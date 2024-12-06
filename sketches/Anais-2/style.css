@@ -27,6 +27,7 @@ body {
 }
 
 .porte {
+    border-radius: 20px;
     position: absolute;
     top: 0;
     right: 0;
@@ -49,6 +50,7 @@ body {
 }
 
 .porte .cache {
+    border-radius: 20px;
     background-color: black;
     /* L'arrière de la porte est noir */
     height: 100%;
@@ -61,6 +63,7 @@ body {
 }
 
 .fond-gris {
+    border-radius: 20px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -78,6 +81,7 @@ body {
 }
 
 .chiffre {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     font-size: 25em;
     position: absolute;
     top: 50%;

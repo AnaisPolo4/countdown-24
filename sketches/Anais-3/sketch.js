@@ -18,17 +18,10 @@ const percentageDisplay = document.getElementById("percentageDisplay");
 
 let canDraw = true; // Variable d'état pour vérifier si le dessin est activé
 let isDrawing = false;
+let audioPlayed = false; // Variable pour éviter de rejouer l'audio plusieurs fois
 
 document.body.style.cursor = "none";
-// Ajouter un événement au clic pour cacher le crayon et activer le dessin
-/*crayon.addEventListener("click", () => {
-  crayon.style.opacity = 0; // Transition de disparition
-  setTimeout(() => {
-    crayon.style.display = "none"; // Supprime le crayon après la transition
-    canDraw = true; // Activer le dessin après avoir cliqué sur le crayon
-  }, 100); // Correspond à la durée de la transition CSS
-});
-*/
+
 // Extraire le chemin du SVG
 const path = doc.querySelector("g path");
 const pathData = new Path2D(path.getAttribute("d"));
@@ -58,6 +51,16 @@ run(update);
 offscreenCtx.fillStyle = "rgba(0, 0, 0, 0)"; // Couleur semi-transparente
 offscreenCtx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
 
+const audio = new Audio("./ecrirre.mp3"); // Remplacer par le chemin vers ton fichier audio
+audio.loop = true; // Active la lecture en boucle
+
+document.addEventListener("mousedown", () => {
+  audio.play(); // Jouer l'audio lorsque l'utilisateur commence à interagir
+});
+
+document.addEventListener("mouseup", () => {
+  audio.pause(); // Arrête la lecture si nécessaire
+});
 function update() {
   if (!canDraw) return; // Empêcher le dessin si le crayon n'a pas été cliqué
 
@@ -69,12 +72,18 @@ function update() {
   if (input.isPressed()) {
     if (!isDrawing) {
       isDrawing = true;
+
+      // Jouer l'audio lorsque l'utilisateur commence à dessiner
+      if (!audioPlayed) {
+        audio.play(); // Joue l'audio
+        audioPlayed = true; // Empêche de rejouer l'audio pendant la session de dessin
+      }
     }
 
     // Dessiner un cercle à la position de la souris
     offscreenCtx.beginPath();
-    offscreenCtx.arc(mouseX, mouseY, 200, 0, Math.PI * 2); // Crée un cercle avec un rayon de 300
-    offscreenCtx.fillStyle = "rgba(255, 182, 193, 1)"; // Remplir le cercle en rouge
+    offscreenCtx.arc(mouseX, mouseY, 200, 0, Math.PI * 2); // Crée un cercle avec un rayon de 200
+    offscreenCtx.fillStyle = "rgba(255, 182, 193, 1)"; // Remplir le cercle en rose pâle
     offscreenCtx.fill();
     offscreenCtx.closePath();
   } else {

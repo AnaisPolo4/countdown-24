@@ -29,6 +29,7 @@ const numberArea = {
 let isScratching = false;
 let confetti = []; // Tableau pour stocker les confettis
 let confettiActive = false; // Variable pour vérifier si les confettis sont actifs
+let audioPlayed = false; // Variable pour vérifier si le son a été joué
 let confettiTimeout; // Timer pour arrêter les confettis après 2 secondes
 
 // Fonction pour gérer le grattage
@@ -65,7 +66,6 @@ function checkNumberArea() {
     const scratchedRatio = scratchedPixels / totalPixels;
 
     if (scratchedRatio > 0.3 && !confettiActive) {
-      // S'assurer que les confettis ne redémarrent pas
       canvas.style.display = "none"; // Cache le canvas de grattage
       startConfetti(); // Lance les confettis
     }
@@ -85,10 +85,16 @@ canvas.addEventListener("touchmove", scratch);
 // Vérification régulière de l'état de la zone cible
 setInterval(checkNumberArea, 100);
 
-// === ANIMATION DES CONFETTIS === //
 function startConfetti() {
-  if (confettiActive) return; // Evite de redémarrer les confettis si déjà actifs
+  if (confettiActive) return; // Évite de redémarrer les confettis si déjà actifs
   confettiActive = true;
+
+  // Charger et jouer le son une seule fois
+  if (!audioPlayed) {
+    const audio = new Audio("./neige.mov"); // Remplacez par le chemin correct de votre fichier audio
+    audio.play();
+    audioPlayed = true; // Marquer le son comme joué
+  }
 
   // Créer des confettis
   for (let i = 0; i < 40; i++) {
@@ -109,9 +115,7 @@ function startConfetti() {
     stopConfetti(); // Stoppe l'animation des confettis
     setTimeout(() => {
       document.querySelector(".screen").style.background = "black"; // Transition vers l'écran noir
-      // Faire disparaître le canvas de confettis et autres éléments après 2 secondes
       confettiCanvas.style.display = "none"; // Cache le canvas des confettis
-      canvas.style.display = "none"; // Cache également le canvas de grattage
       finish(); // Appeler la fonction finish() ici
     }, 20); // Petit délai pour l'écran noir
   }, 2000); // Les confettis apparaissent pendant 2 secondes
@@ -121,11 +125,6 @@ function animateConfetti() {
   if (!confettiActive) return; // Si les confettis sont arrêtés, on arrête l'animation
   confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
 
-  // Fonction finish pour finaliser l'expérience
-  function finish() {
-    // Code à exécuter lorsque l'écran devient noir
-    console.log("Transition terminée, expérience finie !");
-  }
   confetti.forEach((c) => {
     confettiCtx.beginPath();
     confettiCtx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
@@ -137,7 +136,7 @@ function animateConfetti() {
     c.y += c.dy;
 
     // Réinitialiser les confettis sortis de l'écran
-    if (c.y > confettiCanvas.height) c.y = -0;
+    if (c.y > confettiCanvas.height) c.y = 0;
     if (c.x > confettiCanvas.width || c.x < 0) c.dx = -c.dx;
   });
 

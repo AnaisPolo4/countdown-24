@@ -134,6 +134,10 @@ function showFireworks() {
     }
   }
 
+  // Jouer le son "fire.mov" au moment où les feux d'artifice commencent
+  const audio = new Audio("fire.mov");
+  audio.play();
+
   animateFireworks(); // Lancer l'animation des feux d'artifice
 }
 

@@ -1,4 +1,3 @@
-// sketch.js
 import { createIframeClient } from "../../shared/engine/iframeClient.js";
 const iframeClient = createIframeClient();
 function finish() {
@@ -23,12 +22,22 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentX = 0;
   let offsetX = 0;
   let finished = false;
+  let audioPlayed = false; // Permet de ne jouer l'audio qu'une seule fois
+
+  // Charger l'audio
+  const porteAudio = new Audio("./porte.wav"); // Remplace par le chemin vers ton fichier audio
 
   // Fonction qui démarre le glissement
   porte.addEventListener("mousedown", (e) => {
     isDragging = true;
     initialX = e.clientX - offsetX;
     porte.style.cursor = "grabbing"; // Change le curseur pendant le glissement
+
+    // Jouer l'audio lorsqu'on commence à glisser la porte
+    if (!audioPlayed) {
+      porteAudio.play();
+      audioPlayed = true; // Éviter de rejouer l'audio à chaque mouvement
+    }
   });
 
   // Fonction pour suivre le mouvement de la souris
