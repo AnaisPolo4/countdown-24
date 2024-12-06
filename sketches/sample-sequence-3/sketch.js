@@ -1,45 +1,46 @@
-import { createEngine } from "../../shared/engine.js"
-import { Spring } from "../../shared/spring.js"
+function setup() {
+  createCanvas(200, 200, WEBGL);
+}
 
-const { renderer, input, math, run, finish, } = createEngine()
-const { ctx, canvas } = renderer
-run(update)
+function draw() {
+  background(255);
+  lights();
+  noStroke();
+  orbitControl();
 
-const spring = new Spring({
-  position: 0,
-  frequency: 2.5,
-  halfLife: 0.05
-})
+  // The head
+  push();
+  scale(1, 1.25, 1);
+  sphere(50);
+  pop();
 
+  // The nose
+  push();
+  translate(0, 0, 50);
+  scale(1, 1.5, 1);
+  sphere(10);
+  pop();
 
-function update(dt) {
+  // Draw symmetrical parts by looping over each
+  // side, represented by the horizontal scale applied.
+  for (let side of [-1, 1]) {
+    push();
+    // Apply the symmetrical transformation
+    scale(side, 1, 1);
 
-  if (input.isPressed()) {
-    spring.target = 0
+    // Eyes
+    push();
+    translate(20, -10, 40);
+    sphere(8);
+    pop();
+
+    // Ears
+    push();
+    translate(50, 0, 0);
+    scale(1, 1, 0.3);
+    sphere(20);
+    pop();
+
+    pop();
   }
-  else {
-    spring.target = 1
-  }
-
-  spring.step(dt)
-
-  const x = canvas.width / 2;
-  const y = canvas.height / 2;
-  const scale = Math.max(spring.position, 0)
-
-  ctx.fillStyle = "black"
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-  ctx.fillStyle = "white"
-  ctx.textBaseline = "middle"
-  ctx.font = `${canvas.height}px Helvetica Neue, Helvetica , bold`
-  ctx.textAlign = "center"
-  ctx.translate(x, y)
-  ctx.scale(scale, scale)
-  ctx.fillText("3", 0, 0)
-
-  if (scale <= 0) {
-    finish()
-  }
-
 }
